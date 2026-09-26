@@ -247,6 +247,7 @@ CREATE TABLE IF NOT EXISTS gold.previsoes (
     classificacao    TEXT      NOT NULL CHECK (classificacao IN ('churn', 'ativo')),
     faixa_de_risco   TEXT      NOT NULL,
     modelo           TEXT      NOT NULL,
+    conjunto         TEXT      NOT NULL CHECK (conjunto IN ('treino', 'teste')),
     PRIMARY KEY (cliente_id, execucao)
 );
 
@@ -254,3 +255,7 @@ CREATE INDEX IF NOT EXISTS ix_previsoes_prob ON gold.previsoes (probabilidade DE
 
 COMMENT ON TABLE gold.previsoes IS
     'Saída do modelo por cliente — é o que a operação consome';
+COMMENT ON COLUMN gold.previsoes.conjunto IS
+    'De que lado da divisao o cliente ficou. Sem isso, qualquer avaliacao '
+    'feita sobre esta tabela mistura dados que o modelo viu no treino com '
+    'os que nao viu, e o resultado sai otimista.';

@@ -186,6 +186,10 @@ def executar(eng, semente=None):
     X_todos[num] = scaler.transform(X[num])
     prob_todos = modelo_final.predict_proba(X_todos)[:, 1]
 
+    # marcar de que lado da divisão cada cliente ficou é o que permite
+    # avaliar a tabela depois sem misturar o que o modelo viu no treino
+    conjunto = np.where(enc["cliente_id"].isin(set(id_te)), "teste", "treino")
+
     previsoes = pd.DataFrame({
         "cliente_id": enc["cliente_id"],
         "execucao": str(execucao),
@@ -193,10 +197,13 @@ def executar(eng, semente=None):
         "classificacao": np.where(prob_todos >= LIMIAR, "churn", "ativo"),
         "faixa_de_risco": [faixa(p) for p in prob_todos],
         "modelo": melhor,
+        "conjunto": conjunto,
     })
     db.grava(previsoes, "previsoes", "gold", eng, "acrescentar")
     db.anota("PREVISAO", "gold.previsoes", len(previsoes),
-             "%d em risco alto" % int((previsoes.faixa_de_risco == "alto").sum()))
+             "%d em risco alto · %d treino / %d teste"
+             % (int((previsoes.faixa_de_risco == "alto").sum()),
+                int((conjunto == "treino").sum()), int((conjunto == "teste").sum())))
 
     # -----------------------------------------------------------------
     # Persistência — um artefato só
@@ -246,3 +253,20 @@ def _influencia(modelo, X_treino, lista):
     else:
         return None
     return valores.reindex(valores.abs().sort_values(ascending=False).index)
+
+
+def criar_views(eng):
+    """
+    Aplica as views de consumo. Roda depois do treino porque elas dependem
+    de gold.previsoes e de meta.treinos, que só existem a partir dele.
+    """
+    db.inicia_execucao("views")
+    db.executa_sql(eng, config.SQL / "02_views.sql")
+    with eng.connect() as c:
+        from sqlalchemy import text as _t
+        n = c.execute(_t("""
+            select count(*) from information_schema.views
+             where table_schema in ('gold','meta')""")).scalar()
+    db.anota("VIEWS", "views de consumo", n, "gold e meta")
+    db.grava_execucao(eng)
+    return n

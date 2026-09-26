@@ -86,6 +86,7 @@ def main():
         cabecalho(4, "TREINO E SELEÇÃO DO MODELO")
         eng = eng or preparar.executar()
         treinar.executar(eng)
+        treinar.criar_views(eng)
 
     print()
     print("=" * 70)
