@@ -1,0 +1,33 @@
+# credenciais — nunca versionar
+.env
+*.pem
+*.key
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# dados gerados pelo pipeline (reproduzíveis por `python pipeline.py`)
+dados/*.csv
+dados/*.json
+dados/*.parquet
+logs/
+!dados/.gitkeep
+
+# modelos treinados (reproduzíveis; o .pkl de referência vai em release)
+modelos/*.pkl
+!modelos/.gitkeep
+
+# sistema operacional e editores
+Thumbs.db
+desktop.ini
+.DS_Store
+.vscode/
+.idea/
+~$*
