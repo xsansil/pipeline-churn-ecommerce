@@ -21,6 +21,7 @@ sys.path.insert(0, str(RAIZ))
 
 from src import config                                    # noqa: E402
 from src.etl import bronze, gold, preparar, silver        # noqa: E402
+from src.modelo import treinar                            # noqa: E402
 
 ETAPAS = ["preparar", "bronze", "silver", "gold", "modelo"]
 
@@ -81,7 +82,10 @@ def main():
         eng = eng or preparar.executar()
         gold.executar(eng)
 
-    # as etapas seguintes entram nas próximas fases
+    if "modelo" in alvo:
+        cabecalho(4, "TREINO E SELEÇÃO DO MODELO")
+        eng = eng or preparar.executar()
+        treinar.executar(eng)
 
     print()
     print("=" * 70)
