@@ -20,7 +20,7 @@ RAIZ = Path(__file__).resolve().parent
 sys.path.insert(0, str(RAIZ))
 
 from src import config                                    # noqa: E402
-from src.etl import preparar                              # noqa: E402
+from src.etl import bronze, preparar                      # noqa: E402
 
 ETAPAS = ["preparar", "bronze", "silver", "gold", "modelo"]
 
@@ -61,9 +61,15 @@ def main():
 
     alvo = [args.etapa] if args.etapa else ETAPAS
 
+    eng = None
     if "preparar" in alvo:
         cabecalho(0, "PREPARAR O BANCO")
-        preparar.executar()
+        eng = preparar.executar()
+
+    if "bronze" in alvo:
+        cabecalho(1, "COLETA DAS FONTES → BRONZE")
+        eng = eng or preparar.executar()
+        bronze.executar(eng, recriar=args.recriar)
 
     # as etapas seguintes entram nas próximas fases
 
