@@ -193,6 +193,7 @@ CREATE TABLE IF NOT EXISTS silver.transacoes (
     margem           NUMERIC(12,2),
     canal            TEXT          NOT NULL,
     forma_pagamento  TEXT          NOT NULL,
+    cliente_cadastrado BOOLEAN     NOT NULL,
     _processado_em   TIMESTAMP     NOT NULL DEFAULT now(),
     PRIMARY KEY (transacao_id)
 );
@@ -207,6 +208,8 @@ COMMENT ON COLUMN silver.transacoes.mesorregiao IS
     'Veio da API do IBGE, casando pelo nome do município sem acento';
 COMMENT ON COLUMN silver.transacoes.email_valido IS
     'E-mail malformado é marcado, não descartado: a venda aconteceu';
+COMMENT ON COLUMN silver.transacoes.cliente_cadastrado IS
+    'FALSE quando o comprador nao existe no CRM: os atributos vieram do CSV';
 
 
 -- =====================================================================

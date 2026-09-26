@@ -25,7 +25,7 @@ log = logging.getLogger("pipeline")
 
 def executar(eng, recriar=False):
     db.inicia_execucao("bronze")
-    modo = "replace" if recriar else "append"
+    modo = "substituir" if recriar else "acrescentar"
     resumo = {}
 
     # -----------------------------------------------------------------
@@ -48,7 +48,7 @@ def executar(eng, recriar=False):
     caminho, n = catalogo.gerar()
     df_cat = pd.read_json(caminho, dtype=str)
     df_cat["_fonte"] = "json"
-    db.grava(df_cat, "catalogo", "bronze", eng, "replace")   # catálogo é snapshot
+    db.grava(df_cat, "catalogo", "bronze", eng, "substituir")  # catálogo é snapshot
     db.anota("COLETA", "2 JSON catalogo", n, caminho.name)
     resumo["catalogo"] = n
 
@@ -59,7 +59,7 @@ def executar(eng, recriar=False):
     df_ibge = pd.DataFrame(municipios).drop(columns=["municipio_chave"],
                                             errors="ignore").astype(str)
     df_ibge["_fonte"] = "api_ibge"
-    db.grava(df_ibge, "municipios_ibge", "bronze", eng, "replace")
+    db.grava(df_ibge, "municipios_ibge", "bronze", eng, "substituir")
     db.anota("COLETA", "3 API IBGE", len(df_ibge),
              "UFs %s · origem: %s" % ("/".join(config.IBGE_UFS), origem))
     resumo["ibge"] = len(df_ibge)
@@ -77,7 +77,8 @@ def executar(eng, recriar=False):
     if len(df_crm):
         df_crm = df_crm.astype(str)
         df_crm["_fonte"] = "postgresql"
-        db.grava(df_crm, "clientes", "bronze", eng, "replace" if recriar else modo)
+        db.grava(df_crm, "clientes", "bronze", eng,
+                 "substituir" if recriar else modo)
         db.marca(eng, "crm.clientes", df_crm["cadastrado_em"].max())
     db.anota("COLETA", "4 PG clientes", len(df_crm),
              "carga completa" if not marco else "incremental desde " + str(marco))

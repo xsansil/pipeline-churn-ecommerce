@@ -62,9 +62,33 @@ def executa_sql(eng, caminho):
 # ---------------------------------------------------------------------
 # Escrita e leitura
 # ---------------------------------------------------------------------
-def grava(df, tabela, schema, eng, modo="replace", indice=False):
-    """Grava um DataFrame em <schema>.<tabela> e devolve a quantidade."""
-    df.to_sql(tabela, eng, schema=schema, if_exists=modo, index=indice,
+def trunca(eng, schema, tabela):
+    """Esvazia a tabela preservando a estrutura."""
+    with eng.begin() as c:
+        c.execute(text('TRUNCATE TABLE %s."%s"' % (schema, tabela)))
+
+
+def grava(df, tabela, schema, eng, modo="substituir", indice=False):
+    """
+    Grava um DataFrame em <schema>.<tabela> e devolve a quantidade.
+
+    modo="substituir"  esvazia e regrava (TRUNCATE + INSERT)
+    modo="acrescentar" só insere
+
+    O `if_exists="replace"` do pandas não é usado em lugar nenhum, de
+    propósito: ele faz DROP TABLE e recria a tabela a partir dos dtypes do
+    DataFrame. Tudo o que o DDL declarou — chave primária, CHECK, índices,
+    DEFAULT, colunas que o DataFrame não tem — desaparece sem aviso. A
+    tabela continua lá, com o nome certo e os dados certos, só que sem
+    nenhuma das garantias. É uma perda difícil de notar: só aparece quando
+    um dado inválido entra meses depois.
+    """
+    if modo not in ("substituir", "acrescentar"):
+        raise ValueError("modo deve ser 'substituir' ou 'acrescentar', não %r" % modo)
+    if modo == "substituir":
+        trunca(eng, schema, tabela)
+
+    df.to_sql(tabela, eng, schema=schema, if_exists="append", index=indice,
               method="multi", chunksize=1000)
     log.info("%s.%s <- %d linhas (%s)", schema, tabela, len(df), modo)
     return len(df)

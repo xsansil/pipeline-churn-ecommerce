@@ -13,11 +13,24 @@ from .. import config, db
 log = logging.getLogger("pipeline")
 
 
-def executar():
+#: --recriar derruba estas camadas. A `meta` fica de fora de propósito:
+#: ela é o histórico de execuções e de treinos, e apagá-la eliminaria
+#: justamente o registro de que o pipeline já rodou antes.
+RECRIAVEIS = ["bronze", "silver", "gold"]
+
+
+def executar(recriar=False):
     db.inicia_execucao("preparar")
 
     eng = db.engine(criar_se_faltar=True)
     db.anota("SETUP", "banco " + config.PG_BANCO, 1, config.url_segura())
+
+    if recriar:
+        with eng.begin() as c:
+            for camada in RECRIAVEIS:
+                c.execute(text("DROP SCHEMA IF EXISTS %s CASCADE" % camada))
+        db.anota("SETUP", "camadas derrubadas", len(RECRIAVEIS),
+                 ", ".join(RECRIAVEIS) + " — meta preservada")
 
     db.executa_sql(eng, config.SQL / "01_camadas.sql")
 
