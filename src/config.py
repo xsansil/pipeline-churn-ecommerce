@@ -54,7 +54,7 @@ def env(chave, padrao=None, obrigatorio=False):
 # ---------------------------------------------------------------------
 # Banco de dados
 # ---------------------------------------------------------------------
-PG_HOST = env("PG_HOST", "192.168.1.10")
+PG_HOST = env("PG_HOST", "localhost")
 PG_PORT = env("PG_PORT", "5432")
 PG_USER = env("PG_USER", "postgres")
 PG_BANCO = env("PG_BANCO", "churn_dw")
