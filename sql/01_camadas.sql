@@ -212,6 +212,26 @@ COMMENT ON COLUMN silver.transacoes.cliente_cadastrado IS
     'FALSE quando o comprador nao existe no CRM: os atributos vieram do CSV';
 
 
+-- Dimensão de clientes: o cadastro do CRM, limpo. Fica separado das
+-- transações porque a granularidade é outra — um cliente, uma linha. É
+-- daqui que sai a data de cadastro, que vira feature no gold e que não
+-- existiria sem a integração com o banco de origem.
+CREATE TABLE IF NOT EXISTS silver.clientes (
+    cliente_id     INTEGER   PRIMARY KEY,
+    nome           TEXT      NOT NULL,
+    email          TEXT      NOT NULL,
+    idade          SMALLINT  NOT NULL CHECK (idade BETWEEN 18 AND 120),
+    cidade         TEXT      NOT NULL,
+    estado         CHAR(2)   NOT NULL,
+    mesorregiao    TEXT,
+    cadastrado_em  DATE      NOT NULL,
+    _processado_em TIMESTAMP NOT NULL DEFAULT now()
+);
+
+COMMENT ON TABLE silver.clientes IS
+    'Dimensao de clientes vinda do CRM — granularidade de um cliente por linha';
+
+
 -- =====================================================================
 -- GOLD — uma linha por cliente, pronta para o modelo
 -- =====================================================================

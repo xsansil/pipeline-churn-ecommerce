@@ -153,6 +153,36 @@ def executar(eng):
     db.anota("SILVER", "silver.transacoes", db.conta(eng, "silver", "transacoes"),
              "clientes distintos: %d" % saida["cliente_id"].nunique())
 
+    # -----------------------------------------------------------------
+    # Dimensão de clientes — granularidade de um cliente por linha
+    # -----------------------------------------------------------------
+    dim = db.le("select * from bronze.clientes", eng)
+    dim["cliente_id"] = pd.to_numeric(dim["cliente_id"])
+    dim["idade"] = pd.to_numeric(dim["idade"]).astype(int)
+    dim["cadastrado_em"] = pd.to_datetime(dim["cadastrado_em"]).dt.date
+    for coluna in ("nome", "cidade"):
+        dim[coluna] = dim[coluna].str.strip().str.title()
+    dim["email"] = dim["email"].str.strip().str.lower()
+    dim["estado"] = dim["estado"].str.strip().str.upper()
+
+    # A mesorregião vem do IBGE pela cidade do cadastro, e não do mapa que
+    # as transações produziram. Um atributo de dimensão é propriedade da
+    # entidade, não do que restou da tabela de fatos: o cliente 272 tem
+    # cidade válida no CRM mas nenhuma transação sobrevivente à limpeza, e
+    # herdar a mesorregião dos fatos o deixaria sem região sem motivo.
+    dim["chave_cidade"] = dim["cidade"].map(limpeza.sem_acento)
+    ibge_dim = ibge.rename(columns={"uf": "estado_ibge"})
+    dim = dim.merge(ibge_dim, left_on=["chave_cidade", "estado"],
+                    right_on=["chave", "estado_ibge"], how="left")
+
+    dim = dim[["cliente_id", "nome", "email", "idade", "cidade", "estado",
+               "mesorregiao", "cadastrado_em"]]
+    db.grava(dim, "clientes", "silver", eng, "substituir")
+    db.anota("SILVER", "silver.clientes", len(dim),
+             "dimensao vinda do CRM; %d sem mesorregiao"
+             % int(dim["mesorregiao"].isna().sum()))
+
     db.grava_execucao(eng)
     return {"linhas": len(saida), "clientes": saida["cliente_id"].nunique(),
-            "sem_cadastro": sem, "cidades_recuperadas": recuperadas}
+            "sem_cadastro": sem, "cidades_recuperadas": recuperadas,
+            "dimensao": len(dim)}
