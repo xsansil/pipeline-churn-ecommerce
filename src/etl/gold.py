@@ -1,5 +1,5 @@
 """
-Etapa 3 — silver para gold: uma linha por cliente, pronta para o modelo.
+Etapa 3. De silver para gold: uma linha por cliente, pronta para o modelo.
 
 A tabela `gold.features_clientes` é a única do projeto cuja estrutura não
 está declarada no DDL, e isso é deliberado: o conjunto de colunas depende
@@ -9,7 +9,7 @@ pipeline produz.
 
 A tabela é derivada e inteiramente reproduzível, então recriá-la a cada
 execução não perde nada. O que se perde com o `to_sql(replace)` do pandas
-— chave primária e comentários — é reposto logo em seguida, para que a
+(chave primária e comentários) é reposto logo em seguida, para que a
 tabela continue tendo as garantias das demais.
 
 O dicionário de features vai junto, em `gold.features_dicionario`: sem ele
@@ -65,7 +65,7 @@ def executar(eng, corte=None):
              % tx["cliente_id"].nunique())
 
     # -----------------------------------------------------------------
-    # Separação temporal — é o que impede o vazamento
+    # Separação temporal: é o que impede o vazamento
     # -----------------------------------------------------------------
     obs, ava, corte = features.separar_janelas(tx, corte)
     db.anota("JANELA", "observacao (features)", len(obs),
@@ -108,7 +108,7 @@ def executar(eng, corte=None):
     db.grava(saida, TABELA, "gold", eng, "acrescentar")
 
     # -----------------------------------------------------------------
-    # Dicionário — o que cada coluna significa, e o quanto se move com o alvo
+    # Dicionário: o que cada coluna significa, e o quanto se move com o alvo
     # -----------------------------------------------------------------
     dicionario = pd.DataFrame({
         "feature": lista,
@@ -135,7 +135,7 @@ def executar(eng, corte=None):
 
 
 def _origem(coluna):
-    """De qual fonte a feature depende — usado no dicionário da entrega."""
+    """De qual fonte a feature depende: usado no dicionário da entrega."""
     if coluna.startswith("meso_"):
         return "API IBGE"
     if coluna.startswith(("margem", "custo")):

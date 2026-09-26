@@ -1,5 +1,5 @@
 """
-API do projeto integrador — o pipeline exposto por HTTP.
+API do projeto integrador: o pipeline exposto por HTTP.
 
     pip install -r requirements.txt
     uvicorn api.main:app --reload
@@ -7,15 +7,15 @@ API do projeto integrador — o pipeline exposto por HTTP.
 
 Duas famílias de rota:
 
-  * **consulta** — leem as views do gold. A carteira ordenada por risco, o
+  * **consulta**: leem as views do gold. A carteira ordenada por risco, o
     desempenho dos modelos ao longo das rodadas, a contribuição de cada
     fonte. O trabalho é do banco; a API só serve o resultado.
-  * **previsão** — recebem o histórico de um cliente e percorrem o mesmo
+  * **previsão**: recebem o histórico de um cliente e percorrem o mesmo
     caminho do treino: limpeza, enriquecimento pelo banco, features,
     padronização, modelo.
 
 A API não reimplementa nada. Importa `limpeza`, `enriquecimento` e
-`features` — os mesmos módulos que o ETL usa. Duas implementações da
+`features`, os mesmos módulos que o ETL usa. Duas implementações da
 mesma regra divergem com o tempo, e o modelo passa a receber em produção
 dados diferentes dos que aprendeu, sem erro nenhum.
 """
@@ -37,7 +37,7 @@ from src import config, db, enriquecimento, features, limpeza   # noqa: E402
 from src.modelo import treinar                                   # noqa: E402
 
 # ---------------------------------------------------------------------
-# Carga dos artefatos — uma vez, na subida
+# Carga dos artefatos: uma vez, na subida
 # ---------------------------------------------------------------------
 CAMINHO = config.MODELOS / treinar.ARQUIVO
 if not CAMINHO.exists():
@@ -52,7 +52,7 @@ NUMERICAS = PACOTE["numericas"]
 LIMIAR = PACOTE["limiar"]
 
 app = FastAPI(
-    title="Previsão de churn — e-commerce de informática",
+    title="Previsão de churn em e-commerce de informática",
     description="Projeto Integrador · Fundamentos de Banco de Dados "
                 "(BDED-2026.1) · UNIFAP Digital",
     version="1.0.0",
@@ -71,7 +71,7 @@ def consulta(sql, **params):
     Executa a consulta e devolve registros prontos para JSON.
 
     O `astype(object).where(notna)` não é enfeite: NULL do banco vira NaN no
-    pandas, e NaN é float — o serializador JSON rejeita com "Out of range
+    pandas, e NaN é float. O serializador JSON rejeita com "Out of range
     float values are not JSON compliant" e a rota devolve 500. Converter
     para None antes é o que preserva o NULL como `null` na resposta.
     """
@@ -129,7 +129,7 @@ def listar_features():
 
 
 # =====================================================================
-# Consulta — lê as views do gold
+# Consulta: lê as views do gold
 # =====================================================================
 @app.get("/clientes/risco", tags=["consulta"])
 def carteira_em_risco(
@@ -137,7 +137,7 @@ def carteira_em_risco(
     faixa: Optional[str] = Query(None, description="alto, médio, baixo, muito baixo"),
     conjunto: Optional[str] = Query(None, description="treino ou teste"),
 ):
-    """A carteira ordenada pela probabilidade de churn — a fila de abordagem."""
+    """A carteira ordenada pela probabilidade de churn: a fila de abordagem."""
     onde, params = [], {"limite": limite}
     if faixa:
         onde.append("faixa_de_risco = :faixa")
@@ -165,7 +165,7 @@ def cliente(cliente_id: int):
 
 @app.get("/regioes", tags=["consulta"])
 def regioes():
-    """Risco e receita por mesorregião — só existe por causa da API do IBGE."""
+    """Risco e receita por mesorregião, que só existe por causa da API do IBGE."""
     return consulta("select * from gold.vw_risco_por_regiao "
                     "order by receita_em_risco desc nulls last")
 
@@ -195,7 +195,7 @@ def contribuicao_das_fontes():
 
 @app.get("/execucoes", tags=["consulta"])
 def execucoes(limite: int = Query(30, ge=1, le=200)):
-    """Últimos passos registrados pelo ETL — a proveniência."""
+    """Últimos passos registrados pelo ETL: a proveniência."""
     return consulta(
         "select momento, etapa, fase, fonte, quantidade, detalhe "
         "from meta.etl_execucoes order by id desc limit :limite", limite=limite)

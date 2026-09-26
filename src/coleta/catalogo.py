@@ -1,8 +1,8 @@
 """
-Fonte 2 (JSON) — catálogo de produtos.
+Fonte 2 (JSON): catálogo de produtos.
 
 Traz o que o extrato de vendas não tem: o **custo** de cada item e o
-fornecedor. É por isso que essa fonte existe no pipeline — sem ela não há
+fornecedor. É por isso que essa fonte existe no pipeline: sem ela não há
 como calcular margem, e a análise pararia na receita.
 
 O arquivo é gravado em JSON porque é o formato em que catálogos costumam
@@ -14,7 +14,7 @@ import json
 from .. import config
 from .transacoes import PRODUTOS
 
-# margem bruta por categoria — acessório gira mais barato e com margem maior
+# margem bruta por categoria: acessório gira mais barato e com margem maior
 MARGEM = {
     "Acessorios": 0.55,
     "Perifericos": 0.42,

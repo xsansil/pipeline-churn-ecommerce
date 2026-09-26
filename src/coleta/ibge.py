@@ -1,9 +1,9 @@
 """
-Fonte 3 (API REST) — municípios do IBGE.
+Fonte 3 (API REST): municípios do IBGE.
 
 A única fonte externa de verdade do projeto: uma API pública, fora do meu
 controle, que pode estar lenta ou fora do ar na hora em que o pipeline
-rodar. É o que torna esta etapa interessante — e o que obriga a tratar
+rodar. É o que torna esta etapa interessante, e o que obriga a tratar
 falha de rede como caso normal, não como exceção.
 
 Duas defesas:
@@ -13,7 +13,7 @@ Duas defesas:
     no log que foi por ele. Município não muda de mesorregião com
     frequência; dado de ontem serve.
   * **degradação parcial.** A coleta é por UF. Se uma falhar, as outras
-    entram assim mesmo — o enriquecimento fica incompleto para aquele
+    entram assim mesmo. O enriquecimento fica incompleto para aquele
     estado, e isso é melhor do que derrubar o pipeline inteiro.
 
 O casamento com a cidade da transação é pelo nome **sem acento e em caixa
@@ -54,7 +54,7 @@ def coletar(ufs=None, timeout=20, destino=None):
     Busca os municípios das UFs na API do IBGE.
 
     Devolve (registros, origem), em que origem é 'api', 'api+cache' ou
-    'cache' — a etapa de carga registra isso no log de proveniência, para
+    'cache'. A etapa de carga registra isso no log de proveniência, para
     que depois se saiba se aquele dado veio da rede ou do disco.
     """
     ufs = ufs or config.IBGE_UFS

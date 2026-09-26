@@ -1,5 +1,5 @@
 """
-Etapa 0 — prepara o banco: cria o database e aplica o DDL das camadas.
+Etapa 0. Prepara o banco: cria o database e aplica o DDL das camadas.
 
 É idempotente: pode rodar quantas vezes for preciso. O DDL usa
 CREATE ... IF NOT EXISTS em tudo, então reexecutar não apaga dado.
@@ -30,7 +30,7 @@ def executar(recriar=False):
             for camada in RECRIAVEIS:
                 c.execute(text("DROP SCHEMA IF EXISTS %s CASCADE" % camada))
         db.anota("SETUP", "camadas derrubadas", len(RECRIAVEIS),
-                 ", ".join(RECRIAVEIS) + " — meta preservada")
+                 ", ".join(RECRIAVEIS) + " (meta preservada)")
 
     db.executa_sql(eng, config.SQL / "01_camadas.sql")
 

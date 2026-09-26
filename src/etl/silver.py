@@ -1,5 +1,5 @@
 """
-Etapa 2 — bronze para silver: limpeza e integração das fontes.
+Etapa 2. De bronze para silver: limpeza e integração das fontes.
 
 Aqui as quatro fontes viram uma tabela só. Três junções acontecem, e cada
 uma delas recebe um contador explícito:
@@ -11,7 +11,7 @@ uma delas recebe um contador explícito:
 O contador não é zelo excessivo. `merge(how="left")` nunca levanta erro:
 quando a chave não casa, ele preenche com nulo e segue. Um join que
 deveria casar 100% e casa 3% produz uma tabela do tamanho certo, com as
-colunas certas, cheia de nulos — e o problema só aparece lá na frente,
+colunas certas, cheia de nulos, e o problema só aparece lá na frente,
 como um modelo que não aprende. A contagem é o que transforma isso em uma
 linha no log.
 
@@ -53,7 +53,7 @@ def executar(eng):
              "%.1f%% descartado" % (100 * (len(bruto) - len(df)) / len(bruto)))
 
     # -----------------------------------------------------------------
-    # Junção 1 — cadastro do CRM (autoritativo)
+    # Junção 1: cadastro do CRM (autoritativo)
     # -----------------------------------------------------------------
     crm = db.le("select * from bronze.clientes", eng)
     crm["cliente_id"] = pd.to_numeric(crm["cliente_id"])
@@ -88,7 +88,7 @@ def executar(eng):
              "estavam vazias no extrato e vieram do cadastro")
 
     # -----------------------------------------------------------------
-    # Junção 2 — catálogo: custo e margem
+    # Junção 2: catálogo: custo e margem
     # -----------------------------------------------------------------
     cat = db.le("select produto, custo from bronze.catalogo", eng)
     cat["chave"] = cat["produto"].map(limpeza.sem_acento)
@@ -113,7 +113,7 @@ def executar(eng):
     df["margem"] = (df["valor"] - df["custo"]).round(2)
 
     # -----------------------------------------------------------------
-    # Junção 3 — IBGE: mesorregião
+    # Junção 3: IBGE: mesorregião
     # -----------------------------------------------------------------
     ibge = db.le("select municipio, uf, mesorregiao from bronze.municipios_ibge", eng)
     ibge["chave"] = ibge["municipio"].map(limpeza.sem_acento)
@@ -136,7 +136,7 @@ def executar(eng):
                  ", ".join(nao_casou[:6]))
 
     # -----------------------------------------------------------------
-    # Imputação — só agora, depois de o CRM ter tido a chance
+    # Imputação, só agora, depois de o CRM ter tido a chance
     # -----------------------------------------------------------------
     imputacoes = []
     df = limpeza.imputar(df, relatorio=imputacoes)
@@ -154,7 +154,7 @@ def executar(eng):
              "clientes distintos: %d" % saida["cliente_id"].nunique())
 
     # -----------------------------------------------------------------
-    # Dimensão de clientes — granularidade de um cliente por linha
+    # Dimensão de clientes: granularidade de um cliente por linha
     # -----------------------------------------------------------------
     dim = db.le("select * from bronze.clientes", eng)
     dim["cliente_id"] = pd.to_numeric(dim["cliente_id"])

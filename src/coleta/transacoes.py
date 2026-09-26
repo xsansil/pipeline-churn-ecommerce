@@ -1,16 +1,16 @@
 """
-Fonte 1 (CSV) e insumo da Fonte 4 (CRM) — gerador do dado bruto.
+Fonte 1 (CSV) e insumo da Fonte 4 (CRM): gerador do dado bruto.
 
 Simula duas origens que existem separadas na vida real:
 
   * o **extrato de transações** que a plataforma de e-commerce exporta em
-    CSV — desnormalizado (repete nome, e-mail, cidade em toda linha) e
+    CSV, desnormalizado (repete nome, e-mail, cidade em toda linha) e
     sujo, porque é um dump operacional;
   * o **cadastro de clientes** do CRM, que é a fonte autoritativa desses
     mesmos atributos e está limpa.
 
 A duplicação entre as duas é proposital: é ela que dá ao pipeline uma
-decisão real de integração — de qual lado vem o nome do cliente quando os
+decisão real de integração: de qual lado vem o nome do cliente quando os
 dois discordam.
 
 Cada cliente recebe um PERFIL DE ATIVIDADE oculto, que rege a chance de

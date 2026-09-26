@@ -41,7 +41,7 @@ def _amostra(n=30):
 def test_artefato_traz_tudo_o_que_precisa():
     """
     Modelo e scaler no mesmo arquivo. Como artefato separado, o scaler é a
-    peça que se esquece — e o modelo aceita valores crus sem reclamar.
+    peça que se esquece, e o modelo aceita valores crus sem reclamar.
     """
     p = _pacote()
     for chave in ("modelo", "scaler", "features", "numericas", "limiar",
@@ -53,7 +53,7 @@ def test_artefato_traz_tudo_o_que_precisa():
 
 def test_ordem_das_features_e_respeitada():
     """
-    Embaralhar as colunas não pode mudar a previsão — desde que o consumidor
+    Embaralhar as colunas não pode mudar a previsão, desde que o consumidor
     reindexe pela lista salva. Sem isso o modelo recebe um vetor com
     significado trocado e responde assim mesmo.
     """
@@ -102,7 +102,7 @@ def test_modelo_supera_a_linha_de_base():
 def test_a_armadilha_do_f1_continua_valendo():
     """
     Documenta por que a seleção usa ROC AUC. Se este teste falhar, é porque
-    o conjunto mudou e a justificativa precisa ser revista — não porque o
+    o conjunto mudou e a justificativa precisa ser revista, não porque o
     código quebrou.
     """
     p = _pacote()
@@ -154,7 +154,7 @@ def test_previsoes_cobrem_a_carteira():
 
 
 def test_treino_e_reprodutivel():
-    """Mesma semente, mesmas métricas — é o que permite comparar rodadas."""
+    """Mesma semente, mesmas métricas. É o que permite comparar rodadas."""
     eng = db.engine()
     with eng.connect() as c:
         desvios = c.execute(text("""

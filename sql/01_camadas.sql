@@ -1,5 +1,5 @@
 -- =====================================================================
--- Projeto Integrador — estrutura das camadas
+-- Projeto Integrador: estrutura das camadas
 -- Fundamentos de Banco de Dados (BDED-2026.1) · UNIFAP Digital
 --
 -- Arquitetura em camadas (Medallion), vista no Módulo 3:
@@ -8,7 +8,7 @@
 --           quando e de onde veio. É o que permite reprocessar tudo sem
 --           voltar às fontes originais.
 --   silver  o dado limpo, tipado e padronizado, já enriquecido.
---   gold    o dado pronto para consumo — uma linha por cliente, com as
+--   gold    o dado pronto para consumo, uma linha por cliente, com as
 --           features e o alvo. É daqui que o treino lê.
 --   meta    proveniência: log de execuções, controle de carga incremental
 --           e histórico de treinos.
@@ -29,7 +29,7 @@ COMMENT ON SCHEMA meta   IS 'Proveniência: execuções, controle incremental e 
 
 
 -- =====================================================================
--- META — precisa existir antes de tudo, porque as outras etapas gravam aqui
+-- META (precisa existir antes de tudo, porque as outras etapas gravam aqui)
 -- =====================================================================
 
 -- Log de execuções: cada passo de cada etapa vira uma linha. Nunca se
@@ -63,7 +63,7 @@ CREATE TABLE IF NOT EXISTS meta.controle_extracao (
 );
 
 COMMENT ON TABLE meta.controle_extracao IS
-    'Marco da última extração por fonte — base da carga incremental';
+    'Marco da última extração por fonte: base da carga incremental';
 
 
 -- Histórico de treinos: um registry rudimentar. Guarda as métricas de cada
@@ -93,13 +93,13 @@ CREATE INDEX IF NOT EXISTS ix_treinos_execucao ON meta.treinos (execucao);
 CREATE INDEX IF NOT EXISTS ix_treinos_auc      ON meta.treinos (roc_auc DESC);
 
 COMMENT ON TABLE meta.treinos IS
-    'Métricas de cada modelo de cada execução — registry para comparar versões';
+    'Métricas de cada modelo de cada execução: registry para comparar versões';
 COMMENT ON COLUMN meta.treinos.execucao IS
     'Agrupa os modelos treinados na mesma rodada';
 
 
 -- =====================================================================
--- BRONZE — o dado como chegou
+-- BRONZE: o dado como chegou
 -- =====================================================================
 -- Sem chave primária e sem restrição de domínio de propósito: a camada
 -- bronze precisa aceitar o dado sujo. Datas e valores entram como TEXT
@@ -157,21 +157,21 @@ CREATE TABLE IF NOT EXISTS bronze.clientes (
 );
 
 COMMENT ON TABLE bronze.transacoes IS
-    'Fonte 1 (CSV) — transações cruas, com a sujeira preservada';
+    'Fonte 1 (CSV): transações cruas, com a sujeira preservada';
 COMMENT ON TABLE bronze.catalogo IS
-    'Fonte 2 (JSON) — catálogo de produtos com custo e fornecedor';
+    'Fonte 2 (JSON): catálogo de produtos com custo e fornecedor';
 COMMENT ON TABLE bronze.municipios_ibge IS
-    'Fonte 3 (API REST) — municípios do IBGE, coleta externa real';
+    'Fonte 3 (API REST): municípios do IBGE, coleta externa real';
 COMMENT ON TABLE bronze.clientes IS
-    'Fonte 4 (PostgreSQL) — cadastro de clientes de banco existente';
+    'Fonte 4 (PostgreSQL): cadastro de clientes de banco existente';
 
 
 -- =====================================================================
--- SILVER — o dado limpo e enriquecido
+-- SILVER: o dado limpo e enriquecido
 -- =====================================================================
 -- Aqui já valem as restrições: os tipos são corretos e as regras de
 -- negócio da limpeza viram CHECK. Se alguma linha inválida escapar da
--- limpeza em Python, o banco recusa — defesa em profundidade.
+-- limpeza em Python, o banco recusa. É defesa em profundidade.
 
 CREATE TABLE IF NOT EXISTS silver.transacoes (
     transacao_id     BIGINT        NOT NULL,
@@ -213,7 +213,7 @@ COMMENT ON COLUMN silver.transacoes.cliente_cadastrado IS
 
 
 -- Dimensão de clientes: o cadastro do CRM, limpo. Fica separado das
--- transações porque a granularidade é outra — um cliente, uma linha. É
+-- transações porque a granularidade é outra: um cliente, uma linha. É
 -- daqui que sai a data de cadastro, que vira feature no gold e que não
 -- existiria sem a integração com o banco de origem.
 CREATE TABLE IF NOT EXISTS silver.clientes (
@@ -229,11 +229,11 @@ CREATE TABLE IF NOT EXISTS silver.clientes (
 );
 
 COMMENT ON TABLE silver.clientes IS
-    'Dimensao de clientes vinda do CRM — granularidade de um cliente por linha';
+    'Dimensao de clientes vinda do CRM: granularidade de um cliente por linha';
 
 
 -- =====================================================================
--- GOLD — uma linha por cliente, pronta para o modelo
+-- GOLD: uma linha por cliente, pronta para o modelo
 -- =====================================================================
 -- A tabela de features é criada pelo Python (são 42 colunas, e a lista
 -- muda se as features mudarem). O DDL aqui cuida do que é estável: as
@@ -254,7 +254,7 @@ CREATE TABLE IF NOT EXISTS gold.previsoes (
 CREATE INDEX IF NOT EXISTS ix_previsoes_prob ON gold.previsoes (probabilidade DESC);
 
 COMMENT ON TABLE gold.previsoes IS
-    'Saída do modelo por cliente — é o que a operação consome';
+    'Saída do modelo por cliente: é o que a operação consome';
 COMMENT ON COLUMN gold.previsoes.conjunto IS
     'De que lado da divisao o cliente ficou. Sem isso, qualquer avaliacao '
     'feita sobre esta tabela mistura dados que o modelo viu no treino com '

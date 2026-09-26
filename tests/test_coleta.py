@@ -1,7 +1,7 @@
 """
 Testes da camada de coleta.
 
-O que vale testar aqui não é o caminho feliz — é o que acontece quando a
+O que vale testar aqui não é o caminho feliz. É o que acontece quando a
 fonte externa falha. A API do IBGE está fora do meu controle e vai estar
 indisponível em algum momento; o pipeline precisa continuar rodando.
 
@@ -21,7 +21,7 @@ URL_MORTA = "http://127.0.0.1:9/{}"          # porta 9 (discard): recusa na hora
 
 
 # ---------------------------------------------------------------------
-# Coleta externa — resiliência
+# Coleta externa: resiliência
 # ---------------------------------------------------------------------
 def test_ibge_api_no_ar():
     """Caminho normal: a API responde e o resultado vira cache."""
@@ -39,7 +39,7 @@ def test_ibge_uf_indisponivel_completa_pelo_cache():
     Degradação parcial: uma UF cai, a outra responde.
 
     Para exercitar mesmo esse caminho é preciso derrubar **só uma** das UFs,
-    e não a API inteira — senão o teste cai no ramo do cache e o ramo
+    e não a API inteira, senão o teste cai no ramo do cache e o ramo
     parcial nunca é executado. Daí o patch cirúrgico no requests.get.
     """
     ibge.coletar()                            # garante o cache
@@ -83,7 +83,7 @@ def test_sem_acento():
 
 
 # ---------------------------------------------------------------------
-# Geração — reprodutibilidade
+# Geração: reprodutibilidade
 # ---------------------------------------------------------------------
 def test_geracao_e_reprodutivel():
     """Mesma semente, mesmo conjunto. É o que permite conferir os números."""
@@ -98,7 +98,7 @@ def test_geracao_e_reprodutivel():
 
 
 def test_crm_tem_lacuna_proposital():
-    """Nem todo comprador está no CRM — o join tem de tratar o caso."""
+    """Nem todo comprador está no CRM, e o join tem de tratar o caso."""
     info = transacoes.gerar()
     assert info["cadastros_crm"] == 388
     assert len(info["sem_cadastro"]) == 12
@@ -107,8 +107,8 @@ def test_crm_tem_lacuna_proposital():
 def test_ordem_do_sorteio_nao_mudou():
     """
     Guarda contra uma regressão sutil: a ordem das chamadas ao gerador faz
-    parte da semente. Trocar duas de lugar — mover o sorteio do perfil para
-    dentro do dicionário, por exemplo — produz outro conjunto de dados sem
+    parte da semente. Trocar duas de lugar (mover o sorteio do perfil para
+    dentro do dicionário, por exemplo) produz outro conjunto de dados sem
     quebrar nada visivelmente.
     """
     import random

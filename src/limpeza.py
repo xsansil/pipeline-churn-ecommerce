@@ -1,9 +1,9 @@
 """
-Regras de limpeza — bronze para silver.
+Regras de limpeza (bronze para silver).
 
 Fonte única das regras. O ETL usa este módulo, e a API também: se houvesse
 duas implementações, elas divergiriam com o tempo e o modelo passaria a
-receber em produção dados diferentes dos que aprendeu — sem erro nenhum,
+receber em produção dados diferentes dos que aprendeu, sem erro nenhum,
 só com previsões piores.
 
 O critério geral: o que dá para corrigir é corrigido, o que não dá é
@@ -36,7 +36,7 @@ def limpar(df, relatorio=None):
     """
     Recebe o dado cru da bronze e devolve as transações utilizáveis.
 
-    `relatorio` recebe tuplas (rótulo, entrada, saída, removidos) — é o que
+    `relatorio` recebe tuplas (rótulo, entrada, saída, removidos). É o que
     alimenta o funil documentado na entrega.
     """
     passos = []

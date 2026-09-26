@@ -1,5 +1,5 @@
 """
-Etapa 1 — coleta das quatro fontes e carga na camada bronze.
+Etapa 1. Coleta das quatro fontes e carga na camada bronze.
 
 A bronze guarda o dado **como ele chegou**: tudo como texto, sem conversão
 e sem descarte. Nada é corrigido aqui. Duas razões:
@@ -7,7 +7,7 @@ e sem descarte. Nada é corrigido aqui. Duas razões:
   * permite reprocessar a limpeza inteira sem voltar às fontes, que podem
     estar fora do ar ou já ter mudado;
   * preserva a evidência. Depois da limpeza, ninguém consegue provar que
-    havia 185 duplicatas no arquivo original — a menos que o original
+    havia 185 duplicatas no arquivo original, a menos que o original
     esteja guardado.
 
 Cada tabela carrega `_ingerido_em` e `_fonte`: quando entrou e de onde
@@ -29,7 +29,7 @@ def executar(eng, recriar=False):
     resumo = {}
 
     # -----------------------------------------------------------------
-    # Fonte 1 — CSV das transações (e o JSON do CRM, gerado junto)
+    # Fonte 1: CSV das transações (e o JSON do CRM, gerado junto)
     # -----------------------------------------------------------------
     info = transacoes.gerar()
     resumo["geracao"] = info
@@ -43,7 +43,7 @@ def executar(eng, recriar=False):
     resumo["transacoes"] = len(df_tx)
 
     # -----------------------------------------------------------------
-    # Fonte 2 — JSON do catálogo
+    # Fonte 2: JSON do catálogo
     # -----------------------------------------------------------------
     caminho, n = catalogo.gerar()
     df_cat = pd.read_json(caminho, dtype=str)
@@ -53,7 +53,7 @@ def executar(eng, recriar=False):
     resumo["catalogo"] = n
 
     # -----------------------------------------------------------------
-    # Fonte 3 — API REST do IBGE (externa; pode falhar)
+    # Fonte 3: API REST do IBGE (externa, pode falhar)
     # -----------------------------------------------------------------
     municipios, origem = ibge.coletar()
     df_ibge = pd.DataFrame(municipios).drop(columns=["municipio_chave"],
@@ -66,7 +66,7 @@ def executar(eng, recriar=False):
     resumo["ibge_origem"] = origem
 
     # -----------------------------------------------------------------
-    # Fonte 4 — PostgreSQL do CRM (carga incremental pela data de cadastro)
+    # Fonte 4: PostgreSQL do CRM (carga incremental pela data de cadastro)
     # -----------------------------------------------------------------
     _, total_crm, semeou = crm.semear()
     if semeou:

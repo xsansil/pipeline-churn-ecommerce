@@ -1,5 +1,5 @@
 """
-Etapa 4 — gold para modelo: treino, comparação e persistência.
+Etapa 4. De gold para modelo: treino, comparação e persistência.
 
 Lê a tabela de features do banco, compara cinco algoritmos, escolhe um e
 grava três coisas:
@@ -10,13 +10,13 @@ grava três coisas:
 
 O registro em `meta.treinos` é o que transforma o treino em histórico. Sem
 ele só existe o último modelo, e não há como responder se a versão de hoje
-é melhor do que a do mês passado — uma pergunta que aparece assim que o
+é melhor do que a do mês passado. É uma pergunta que aparece assim que o
 pipeline roda pela segunda vez.
 
 ## Sobre a métrica de seleção
 
 A escolha usa ROC AUC, e não F1, por um motivo medido: neste conjunto a
-linha de base — responder "churn" para todo mundo — obtém F1 de 0,718. Ela
+linha de base (responder "churn" para todo mundo) obtém F1 de 0,718. Ela
 acerta todos os positivos, então o recall é 1,0; e como 56% dos clientes
 de fato dão churn, a precisão já nasce em 0,56. A média harmônica disso é
 alta o bastante para superar a maioria dos modelos treinados, e selecionar
@@ -103,7 +103,7 @@ def executar(eng, semente=None):
     scaler = StandardScaler()
     X_tr_s, X_te_s = X_tr.copy(), X_te.copy()
     # fit SÓ no treino: ajustar no conjunto inteiro levaria a média e o
-    # desvio do teste para dentro do treinamento — vazamento silencioso
+    # desvio do teste para dentro do treinamento (vazamento silencioso)
     X_tr_s[num] = scaler.fit_transform(X_tr[num])
     X_te_s[num] = scaler.transform(X_te[num])
 
@@ -112,7 +112,7 @@ def executar(eng, semente=None):
              % (len(X_tr), 100 * y_tr.mean(), len(X_te), 100 * y_te.mean(), len(num)))
 
     # -----------------------------------------------------------------
-    # Linha de base — o piso contra o qual os modelos são julgados
+    # Linha de base: o piso contra o qual os modelos são julgados
     # -----------------------------------------------------------------
     base = DummyClassifier(strategy="most_frequent").fit(X_tr_s, y_tr)
     m_base = _metricas(y_te, base.predict(X_te_s), base.predict_proba(X_te_s)[:, 1])
@@ -154,7 +154,7 @@ def executar(eng, semente=None):
              % tabela.sort_values("f1", ascending=False).iloc[0]["modelo"])
 
     # -----------------------------------------------------------------
-    # Registro das métricas — o registry
+    # Registro das métricas: o registry
     # -----------------------------------------------------------------
     registro = tabela.copy()
     registro.insert(0, "execucao", str(execucao))
@@ -171,7 +171,7 @@ def executar(eng, semente=None):
     db.grava(registro, "treinos", "meta", eng, "acrescentar")
 
     # -----------------------------------------------------------------
-    # Importância — corrigida pela escala
+    # Importância: corrigida pela escala
     # -----------------------------------------------------------------
     influentes = _influencia(modelo_final, X_tr_s, lista)
     if influentes is not None:
@@ -206,7 +206,7 @@ def executar(eng, semente=None):
                 int((conjunto == "treino").sum()), int((conjunto == "teste").sum())))
 
     # -----------------------------------------------------------------
-    # Persistência — um artefato só
+    # Persistência: um artefato só
     # -----------------------------------------------------------------
     # O scaler vai dentro do mesmo arquivo de propósito. Como artefato
     # separado ele é a peça que se esquece: o modelo aceita valores crus
@@ -242,7 +242,7 @@ def _influencia(modelo, X_treino, lista):
     O coeficiente cru não serve: as numéricas foram padronizadas (desvio
     1,0) e as binárias do One-Hot não (desvio entre 0,2 e 0,5, porque cada
     categoria vale 1 em poucas linhas). Para o mesmo efeito no resultado, a
-    coluna esparsa precisa de um coeficiente várias vezes maior — e sobe no
+    coluna esparsa precisa de um coeficiente várias vezes maior, e sobe no
     ranking sem ter mais influência. Multiplicar pelo desvio da própria
     coluna corrige isso.
     """

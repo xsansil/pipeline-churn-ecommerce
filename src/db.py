@@ -2,7 +2,7 @@
 Acesso ao PostgreSQL: conexão, criação do banco e registro de execuções.
 
 Todo o pipeline passa por aqui. Concentrar a conexão em um módulo evita que
-cada etapa monte a própria URL — e é o que permite trocar host, banco ou
+cada etapa monte a própria URL, e é o que permite trocar host, banco ou
 credencial em um lugar só.
 """
 import logging
@@ -77,8 +77,8 @@ def grava(df, tabela, schema, eng, modo="substituir", indice=False):
 
     O `if_exists="replace"` do pandas não é usado em lugar nenhum, de
     propósito: ele faz DROP TABLE e recria a tabela a partir dos dtypes do
-    DataFrame. Tudo o que o DDL declarou — chave primária, CHECK, índices,
-    DEFAULT, colunas que o DataFrame não tem — desaparece sem aviso. A
+    DataFrame. Tudo o que o DDL declarou (chave primária, CHECK, índices,
+    DEFAULT, colunas que o DataFrame não tem) desaparece sem aviso. A
     tabela continua lá, com o nome certo e os dados certos, só que sem
     nenhuma das garantias. É uma perda difícil de notar: só aparece quando
     um dado inválido entra meses depois.
@@ -105,7 +105,7 @@ def conta(eng, schema, tabela):
 
 
 # ---------------------------------------------------------------------
-# Proveniência — quem gravou o quê, quando e de onde
+# Proveniência: quem gravou o quê, quando e de onde
 # ---------------------------------------------------------------------
 _EXECUCAO = {"registros": []}
 

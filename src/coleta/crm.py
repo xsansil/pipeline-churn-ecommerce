@@ -1,9 +1,9 @@
 """
-Fonte 4 (PostgreSQL) — o cadastro de clientes do CRM.
+Fonte 4 (PostgreSQL): o cadastro de clientes do CRM.
 
 Em produção este banco pertence a outro sistema e o pipeline só o lê. Para
 que o projeto seja reproduzível em qualquer máquina, o módulo também sabe
-criá-lo e populá-lo a partir do JSON gerado na coleta — mas essa semeadura
+criá-lo e populá-lo a partir do JSON gerado na coleta, mas essa semeadura
 é setup de ambiente, não parte do fluxo de dados.
 
 A separação importa: o CRM é a **fonte autoritativa** dos atributos do
@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS clientes (
     cadastrado_em  DATE      NOT NULL
 );
 COMMENT ON TABLE clientes IS
-    'Cadastro do CRM — fonte autoritativa dos atributos do cliente';
+    'Cadastro do CRM: fonte autoritativa dos atributos do cliente';
 """
 
 
@@ -47,7 +47,7 @@ def semear(caminho_json=None):
     """
     Cria o banco do CRM e carrega o cadastro. Idempotente.
 
-    Só roda quando a tabela não existe ou está vazia — para não sobrescrever
+    Só roda quando a tabela não existe ou está vazia, para não sobrescrever
     um CRM que já esteja em uso.
     """
     caminho = caminho_json or (config.DADOS / "clientes_crm.json")
@@ -72,7 +72,7 @@ def semear(caminho_json=None):
 
 def extrair(eng=None, desde=None):
     """
-    Lê o cadastro do CRM. Com `desde`, traz só quem foi cadastrado depois —
+    Lê o cadastro do CRM. Com `desde`, traz só quem foi cadastrado depois.
     é o gancho da carga incremental, usando a data de cadastro como marco.
     """
     eng = eng or engine_origem()

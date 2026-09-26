@@ -1,12 +1,12 @@
 """
-Engenharia de features — silver para gold.
+Engenharia de features (silver para gold).
 
 Muda a granularidade: de uma linha por transação para uma linha por
 cliente. O modelo não classifica compras, classifica pessoas.
 
 ## A separação temporal
 
-A definição intuitiva de churn — "está há mais de 90 dias sem comprar" —
+A definição intuitiva de churn ("está há mais de 90 dias sem comprar")
 tem um defeito fatal se `dias sem comprar` também virar feature: a
 resposta fica dentro da pergunta. O modelo acerta quase tudo sem ter
 aprendido nada, e o resultado só desmorona em produção.
@@ -119,7 +119,7 @@ def construir(obs, dim=None, corte=None):
     # A recência isolada não distingue dois casos opostos. Quem compra a
     # cada 15 dias e está há 90 sem comprar está seis ciclos fora do padrão
     # DELE; quem compra a cada 120 e está há 90 está dentro do normal. A
-    # recência é a mesma nos dois — 90 dias.
+    # recência é a mesma nos dois, 90 dias.
     f["razao_recencia_intervalo"] = (
         f["recencia_dias"] / f["intervalo_medio"].clip(lower=1)).round(2)
 
@@ -173,7 +173,7 @@ def codificar(f, colunas_esperadas=None):
     informação em granularidade mais grossa: são dez municípios contra seis
     mesorregiões, e com 299 clientes no treino cada coluna binária a menos
     é uma chance a menos de o modelo ajustar ruído. Usar as duas seria
-    redundância pura — mesorregião é um agrupamento de municípios.
+    redundância pura, já que mesorregião é um agrupamento de municípios.
 
     `colunas_esperadas` é a lista salva no treino. Com ela o resultado é
     forçado a ter as mesmas colunas na mesma ordem: categoria nova é

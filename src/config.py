@@ -1,5 +1,5 @@
 """
-Configuração do projeto — credenciais vêm do ambiente, nunca do código.
+Configuração do projeto. As credenciais vêm do ambiente, nunca do código.
 
 A ordem de precedência é: variável de ambiente já definida > arquivo .env >
 valor padrão. O .env está no .gitignore; o .env.example, versionado, mostra
@@ -7,7 +7,7 @@ quais chaves existem sem revelar nenhum valor.
 
 O parser do .env é próprio, de propósito. As implementações mais comuns tratam
 o `#` como início de comentário em qualquer posição, e uma senha contendo `#`
-sem aspas chega truncada ao banco — o sintoma é um erro de autenticação que não
+sem aspas chega truncada ao banco. O sintoma é um erro de autenticação que não
 diz nada sobre o motivo. Aqui o `#` só inicia comentário quando abre a linha.
 """
 import os

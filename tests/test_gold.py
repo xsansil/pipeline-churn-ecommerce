@@ -1,5 +1,5 @@
 """
-Testes da camada gold — sobretudo contra vazamento de dados.
+Testes da camada gold, sobretudo contra vazamento de dados.
 
 Vazamento é a falha mais cara deste tipo de projeto porque ela não se
 manifesta como erro: o modelo fica ótimo nas métricas e inútil na prática.
@@ -44,7 +44,7 @@ def test_features_nao_enxergam_a_janela_de_avaliacao():
     """
     O teste que importa: construir as features com a janela de observação
     inteira e com ela mais a de avaliação tem de dar resultados diferentes.
-    Se der igual, é porque a função ignora o corte — e nesse caso ela
+    Se der igual, é porque a função ignora o corte, e nesse caso ela
     estaria livre para olhar o futuro sem que ninguém percebesse.
     """
     tx, dim = _silver()
@@ -71,7 +71,7 @@ def test_recencia_nunca_e_negativa():
 def test_nenhuma_feature_prediz_perfeitamente():
     """
     Canário de vazamento. Correlação acima de 0,90 com o alvo, num problema
-    de churn, quase nunca é um achado — é a resposta escondida na pergunta.
+    de churn, quase nunca é um achado. É a resposta escondida na pergunta.
     """
     f = db.le("select * from gold.features_clientes", db.engine())
     alvo = f["churn"]
@@ -99,7 +99,7 @@ def test_one_hot_nao_inventa_ordem():
 def test_reindex_alinha_categoria_nova_e_ausente():
     """
     Cliente de uma região que não existia no treino não pode quebrar a
-    previsão, e coluna que faltar tem de entrar zerada — na ordem certa.
+    previsão, e coluna que faltar tem de entrar zerada, na ordem certa.
     """
     tx, dim = _silver()
     obs, _, corte = features.separar_janelas(tx)

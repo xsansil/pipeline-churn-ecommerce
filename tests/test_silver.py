@@ -2,7 +2,7 @@
 Testes da camada silver: limpeza, integração e as garantias do banco.
 
 Dois grupos. O primeiro verifica as regras de limpeza em Python. O segundo
-verifica que o banco recusa o que escapar delas — a defesa em profundidade
+verifica que o banco recusa o que escapar delas. A defesa em profundidade
 só vale se alguém já tiver checado que ela existe.
 
     python -m pytest tests/test_silver.py -v

@@ -3,7 +3,7 @@ Enriquecimento das transações com as fontes de apoio.
 
 Extraído para módulo próprio porque dois caminhos precisam dele: o ETL, ao
 montar a camada silver, e a API, ao pontuar um cliente novo. Se cada um
-tivesse a própria implementação, elas divergiriam — e a diferença
+tivesse a própria implementação, elas divergiriam, e a diferença
 apareceria como previsão pior, não como erro.
 
 As duas junções são determinísticas e dependem só do banco:

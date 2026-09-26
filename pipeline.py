@@ -1,5 +1,5 @@
 """
-Projeto Integrador — orquestrador do pipeline.
+Projeto Integrador: orquestrador do pipeline.
 
 Fundamentos de Banco de Dados (BDED-2026.1) · UNIFAP Digital
 Aluno: Sandro
@@ -42,12 +42,12 @@ def configura_log(verboso=False):
 def cabecalho(n, titulo):
     print()
     print("=" * 70)
-    print("ETAPA %s — %s" % (n, titulo))
+    print("ETAPA %s: %s" % (n, titulo))
     print("=" * 70)
 
 
 def main():
-    ap = argparse.ArgumentParser(description="Pipeline de churn — projeto integrador")
+    ap = argparse.ArgumentParser(description="Pipeline de churn do projeto integrador")
     ap.add_argument("--etapa", choices=ETAPAS, help="roda apenas esta etapa")
     ap.add_argument("--recriar", action="store_true",
                     help="descarta as camadas antes de recriar")
@@ -57,7 +57,7 @@ def main():
     log = configura_log(args.verboso)
     inicio = time.time()
 
-    print("PIPELINE DE CHURN — e-commerce de informática")
+    print("PIPELINE DE CHURN (e-commerce de informática)")
     print("fontes → bronze → silver → gold → modelo")
 
     alvo = [args.etapa] if args.etapa else ETAPAS

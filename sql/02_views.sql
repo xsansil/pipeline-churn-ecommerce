@@ -1,5 +1,5 @@
 -- =====================================================================
--- Projeto Integrador — views de consumo
+-- Projeto Integrador: views de consumo
 -- Fundamentos de Banco de Dados (BDED-2026.1) · UNIFAP Digital
 --
 -- As views são a interface do gold. A API e qualquer ferramenta de BI leem
@@ -7,7 +7,7 @@
 -- a estrutura interna mude.
 --
 -- Todas filtram pela execução mais recente. `gold.previsoes` e
--- `meta.treinos` são append-only — guardam todas as rodadas — e sem o
+-- `meta.treinos` são append-only (guardam todas as rodadas), e sem o
 -- filtro as consultas somariam previsões de treinos diferentes.
 -- =====================================================================
 
@@ -20,7 +20,7 @@ SELECT execucao, treinado_em, modelo, roc_auc, n_treino, n_teste
  LIMIT 1;
 
 COMMENT ON VIEW gold.vw_ultima_execucao IS
-    'O treino vigente — as outras views se ancoram nele';
+    'O treino vigente: as outras views se ancoram nele';
 
 
 -- =====================================================================
@@ -55,11 +55,11 @@ SELECT
  WHERE p.execucao = (SELECT execucao FROM gold.vw_ultima_execucao);
 
 COMMENT ON VIEW gold.vw_clientes_risco IS
-    'Carteira ordenada pela probabilidade de churn — a lista de abordagem';
+    'Carteira ordenada pela probabilidade de churn: a lista de abordagem';
 
 
 -- =====================================================================
--- Ganho por decil — o modelo ordena a carteira?
+-- Ganho por decil: o modelo ordena a carteira?
 -- =====================================================================
 -- A leitura honesta desta tabela exige separar treino de teste. O modelo
 -- viu 299 dos 399 clientes durante o treinamento, e a concentracao de
@@ -80,7 +80,7 @@ SELECT
  ORDER BY decil;
 
 COMMENT ON VIEW gold.vw_ganho_por_decil IS
-    'Concentracao de churn por decil de risco — separando treino de teste';
+    'Concentracao de churn por decil de risco: separando treino de teste';
 
 
 -- =====================================================================
@@ -104,7 +104,7 @@ SELECT
  GROUP BY 1;
 
 COMMENT ON VIEW gold.vw_risco_por_regiao IS
-    'Risco e receita por mesorregiao — depende do enriquecimento do IBGE';
+    'Risco e receita por mesorregiao: depende do enriquecimento do IBGE';
 
 
 -- =====================================================================
@@ -128,7 +128,7 @@ SELECT
  ORDER BY auc_medio DESC;
 
 COMMENT ON VIEW gold.vw_desempenho_modelos IS
-    'Desempenho por algoritmo ao longo das rodadas — comparacao de versoes';
+    'Desempenho por algoritmo ao longo das rodadas: comparacao de versoes';
 
 
 -- =====================================================================

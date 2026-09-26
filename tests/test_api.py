@@ -1,7 +1,7 @@
 """
 Testes da API.
 
-Usam o TestClient do FastAPI, que roda a aplicação em processo — não é
+Usam o TestClient do FastAPI, que roda a aplicação em processo, então não é
 preciso subir o uvicorn.
 
     python -m pytest tests/test_api.py -v
