@@ -258,9 +258,19 @@ embora mais ruidoso, porque são apenas 5 a 15 clientes por decil.
 
 ### Requisitos
 
-- Python 3.12
-- PostgreSQL 16 acessível (o projeto cria os bancos `churn_dw` e `crm_origem`)
-- `pip install -r requirements.txt`
+- Python 3.12 e `pip install -r requirements.txt`
+- PostgreSQL 16 acessível (o projeto cria sozinho os bancos `churn_dw` e
+  `crm_origem`)
+
+Sem um PostgreSQL à mão, o `docker-compose.yml` sobe um:
+
+```bash
+docker compose up -d --wait
+```
+
+Nesse caso, use `PG_HOST=localhost` no `.env`. O serviço tem healthcheck, então
+o `--wait` só devolve o controle quando o banco estiver aceitando conexões, o
+que evita o erro confuso de rodar o pipeline cedo demais.
 
 ### Configuração
 
@@ -320,6 +330,7 @@ python -m pytest tests/ -v
 projeto_integrador/
 ├── pipeline.py               orquestrador, uma etapa por comando
 ├── requirements.txt
+├── docker-compose.yml        PostgreSQL 16, para rodar sem instalar nada
 ├── .env.example              as chaves, sem os valores
 │
 ├── sql/

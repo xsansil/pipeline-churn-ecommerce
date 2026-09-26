@@ -1,0 +1,49 @@
+# =====================================================================
+# PostgreSQL para o projeto integrador
+#
+# Sobe um banco limpo, na mesma versão usada no desenvolvimento, para que
+# o projeto rode em qualquer máquina com Docker sem depender de uma
+# instalação local.
+#
+#     docker compose up -d
+#     cp .env.example .env        # e ajuste PG_HOST=localhost
+#     python pipeline.py
+#
+# O pipeline cria sozinho os dois bancos de que precisa (churn_dw e
+# crm_origem), então aqui só o serviço precisa existir.
+#
+# Para derrubar tudo, inclusive os dados:
+#     docker compose down -v
+# =====================================================================
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: churn_postgres
+    environment:
+      # A senha vem do ambiente, com um padrão para uso local. Em qualquer
+      # uso que não seja a sua própria máquina, defina PG_SENHA antes de
+      # subir, em vez de aceitar o padrão.
+      POSTGRES_PASSWORD: ${PG_SENHA:-postgres}
+      POSTGRES_USER: ${PG_USER:-postgres}
+      POSTGRES_DB: postgres
+      # O pipeline grava datas e textos em português; o locale evita
+      # surpresa na ordenação de nomes com acento.
+      LANG: pt_BR.utf8
+    ports:
+      - "${PG_PORT:-5432}:5432"
+    volumes:
+      - dados_postgres:/var/lib/postgresql/data
+    healthcheck:
+      # O pipeline falha de forma confusa se conectar antes de o banco
+      # aceitar conexões. O healthcheck deixa o `docker compose up --wait`
+      # segurar até que esteja pronto.
+      test: ["CMD-SHELL", "pg_isready -U ${PG_USER:-postgres} -d postgres"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+      start_period: 5s
+    restart: unless-stopped
+
+volumes:
+  dados_postgres:
