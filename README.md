@@ -320,6 +320,15 @@ Documentação interativa em <http://127.0.0.1:8000/docs>.
 python -m pytest tests/ -v
 ```
 
+### O caderno de análise
+
+```bash
+jupyter lab notebooks/analise_exploratoria.ipynb
+```
+
+Percorre as quatro camadas do banco com SQL, do dado cru ao resultado do modelo.
+Exige que o pipeline já tenha rodado.
+
 46 testes. Também rodam sem pytest: `python tests/test_silver.py`.
 
 ---
@@ -348,6 +357,8 @@ projeto_integrador/
 │   └── modelo/treinar.py     treino, seleção, registry, persistência
 │
 ├── api/main.py               FastAPI
+├── notebooks/
+│   └── analise_exploratoria.ipynb   EDA sobre o banco, depois do pipeline
 ├── tests/                    46 testes
 ├── docs/arquitetura.md       o fluxo detalhado
 ├── dados/                    gerados pelo pipeline (fora do versionamento)
