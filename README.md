@@ -3,11 +3,17 @@
 **Projeto Integrador (T15)**
 Fundamentos de Banco de Dados (BDED-2026.1)
 Especialização em Projetos em Inteligência Artificial, UNIFAP Digital
-Aluno: Sandro · Prof. Dr. Adolfo Colares
+Aluno: Sandro · 
+Prof. Dr. Adolfo Colares
 
 Pipeline completo de dado bruto a modelo de IA, com quatro fontes heterogêneas,
 armazenamento em camadas no PostgreSQL, engenharia de features, comparação de
 modelos e uma API que serve o resultado.
+
+**Apresentação:** 14 slides resumindo o projeto, em
+[exameia.com.br/bded](https://exameia.com.br/bded/). Uma cópia fica em
+[`docs/apresentacao.html`](docs/apresentacao.html), para o caso de o endereço
+sair do ar.
 
 ```bash
 python pipeline.py        # do zero ao modelo treinado, em ~14 segundos
@@ -20,12 +26,12 @@ python pipeline.py        # do zero ao modelo treinado, em ~14 segundos
 Um e-commerce de informática e acessórios quer saber **quais clientes estão
 prestes a parar de comprar**, para agir antes que isso aconteça.
 
-A pergunta não é acadêmica. Reter um cliente custa um cupom de desconto; perder
+ Reter um cliente custa um cupom de desconto; perder
 um custa todo o faturamento futuro dele. O problema é que a equipe de retenção
 não consegue abordar 400 pessoas, então precisa de uma **ordem de prioridade**.
 
 É isso que o projeto entrega: a carteira ordenada pela probabilidade de churn.
-O modelo não adivinha quem vai sair (nenhum modelo faz isso), mas concentra os
+O modelo não adivinha quem vai sair , mas concentra os
 casos reais no topo da lista. Nos 10% de maior risco, 100% dos clientes de fato
 não voltaram a comprar; nos 10% de menor risco, apenas 9%.
 
@@ -360,7 +366,9 @@ projeto_integrador/
 ├── notebooks/
 │   └── analise_exploratoria.ipynb   EDA sobre o banco, depois do pipeline
 ├── tests/                    46 testes
-├── docs/arquitetura.md       o fluxo detalhado
+├── docs/
+│   ├── arquitetura.md        o fluxo detalhado
+│   └── apresentacao.html     os 14 slides, autocontido
 ├── dados/                    gerados pelo pipeline (fora do versionamento)
 └── modelos/                  modelo_churn.pkl (idem)
 ```
