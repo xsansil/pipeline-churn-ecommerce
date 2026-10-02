@@ -12,8 +12,8 @@ modelos e uma API que serve o resultado.
 
 **Apresentação:** 14 slides resumindo o projeto, em
 [exameia.com.br/bded](https://exameia.com.br/bded/). Uma cópia fica em
-[`docs/apresentacao.html`](docs/apresentacao.html), para o caso de o endereço
-sair do ar.
+[`docs/apresentacao.pdf`](docs/apresentacao.pdf), que o GitHub abre na própria
+página.
 
 ```bash
 python pipeline.py        # do zero ao modelo treinado, em ~14 segundos
@@ -368,7 +368,7 @@ projeto_integrador/
 ├── tests/                    46 testes
 ├── docs/
 │   ├── arquitetura.md        o fluxo detalhado
-│   └── apresentacao.html     os 14 slides, autocontido
+│   └── apresentacao.pdf      os 14 slides
 ├── dados/                    gerados pelo pipeline (fora do versionamento)
 └── modelos/                  modelo_churn.pkl (idem)
 ```
